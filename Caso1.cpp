@@ -9,8 +9,17 @@ MELANY DAHIANA SALAS FERNANDEZ
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <vector>
+#include <algorithm>
+#include <bits/stdc++.h>
 
 using namespace std;
+
+
+
+string ltrim(const string &);
+string rtrim(const string &);
+vector<string> split(const string &);
 
 //---------------------------------PARTE-1----------------------------------
 //Compare the triplets______________________________________________________
@@ -122,11 +131,14 @@ int suma(int listaInt[], int size){
 }
 
 //Version 1.
+//Esta solucion es menos eficiente, pues usa 1 ciclo para recorrer la lista, un segundo ciclo para hacer combinaciones y un 
+//tercer ciclo para verificar la suma de los elementos del array
 int subarrayDivisionV1(int listaInt[], int size, int dia, int mes){
     int comboCumple[mes];
     int contElementos;
     int contResul=0;
     int control;
+
     for(int i = 0; i < (size - (mes-1)); i++ ){
         comboCumple[0]= listaInt[i];
         control= i+1;
@@ -142,22 +154,21 @@ int subarrayDivisionV1(int listaInt[], int size, int dia, int mes){
             }
         } 
     }
-
     return contResul;
 }
 
 
 //Version 2.
-//Es mas eficiente porque a comparacion de la solucion anterior, solo usa un ciclo for, no 3.
+//Es mas eficiente porque, a comparacion de la solucion anterior, solo usa un ciclo for, no 3.
 int subarrayDivisionV2(int listaInt[], int size, int dia, int mes){
     int inicial = 0;
-    int respuesta = 0;
+    int contResul = 0;
     int suma = 0;
     int control= 1;
     for (int i=0; i < size; i++){
         suma+=listaInt[i];
         if (control == mes && suma == dia){
-            respuesta+=1;
+            contResul+=1;
             suma-= listaInt[inicial];
             inicial++;
         } else if (control == mes){
@@ -165,41 +176,92 @@ int subarrayDivisionV2(int listaInt[], int size, int dia, int mes){
             inicial+=1;
         } else
             control++;
-
     }
-   // cout << respuesta << end;
-   return respuesta;
+   return contResul;
 }
 
 //The Minion Game___________________________________________________________________
 //Entradas: Un string con la palabra con la que se va a jugar en letras mayusculas
 //Salidas: El nombre del jugador ganador y el puntaje obtenido
-//Restricciones: 
+//Restricciones: NA
 
 string minionGame( string palabra){
 
     string resul;
-
     int lim = palabra.length(); int lim2 = lim;
     int contC = 0 ; int contV = 0;
 
     for(int i = 0; i <= lim; i++){
-        char letra = palabra[i];
-        if( letra == 65 || letra == 69 || letra == 73 || letra == 79 || letra == 85){
-            contV += lim2;
+        char letra = palabra[i]; //La letra de la palabra en la que estoy actualmente
+        if( letra == 65 || letra == 69 || letra == 73 || letra == 79 || letra == 85){  //Comparacion con codigos ascci
+            contV += lim2; //Se aumenta el contador de vocales
         } else
-            contC += lim2;
-        lim2--;
+            contC += lim2;  //Se aumenta en contador de consonantes
+        lim2--; //El lim 2 dse disminuye porque conforme avamzo en la palabra, las posibles combinaciones son menos
     }
     //EVALUACION DEL VALOR DE RETORNO
     if (contV > contC){
         resul = "Kevin " + to_string(contV);
     } else
         resul = "Stuart " + to_string(contC);
-    
     return resul;
 }
 
+//The Cipher___________________________________________________________________
+//Entradas: Un entero K que representa las veces que se han hecho corrimientos
+//          Un entero N que representa la longitud que debe tener la salida
+//          Un string compuesto de 1 y 0
+//Salidas: El mensaje decodificado
+//Restricciones: NA
+string cipher(int k, int n, string s) {
+//    /* n es la longitud del string resultado
+    vector<char> result(n);
+
+    result[0] = s[0]-48;
+
+    // Calcular los elementos de 1 a k-1
+    for (int i = 1; i < k; i++) {
+        result[i] = s[i-1] ^ s[i];
+    }
+    // Calcular los elementos de k en adelante
+    char aux;
+    for (int i = k; i < n; i++) {
+        aux = '0';
+        for (int j = i-(k-1); j < i; j++) {
+            aux = aux ^ result[j];
+        }
+        result[i] = aux ^ s[i];
+    }
+    // Armar el string con el resultado
+    string final_result = "";
+    for (int i = 0; i < n; i++) {
+        final_result += result[i]+48;
+    }
+    return final_result;
+}
+
+int pairs(int diferencia, vector<int> arr){
+    int pointers[] = {1, 0, 0};     //Ayudan a ir avanzando en el array
+    int resul = 0;                  //contador con el resultado de numeros que tienen diferencia K
+    int valueDif = 0;               //Diferencia entre 2 numeros
+
+    //Ciclo while para hacer los recorridos
+    while (pointers[0] < arr.size()) {
+        //cout <<  "Pointer[0]:" << pointers[0] <<  " Pointer[1]:" << pointers[1] <<  " Pointer[2]:" << pointers[2]<< endl;
+        valueDif = abs(arr[pointers[0]] - arr[pointers[2]]); //resta entre numeros
+        //cout << "Pos1: " << arr[pointers[0]] << "| pos2 : "<<  arr[pointers[2]] << endl;
+        if (valueDif == diferencia) {        //si la diferencia en de k
+            resul++;                        //Se aumenta en contador
+            pointers[0]++;                  //el puntero sub 0 aumenta en uno el valor actual
+            continue;                       //sale del ciclo y vuelve a evaluar 
+        }
+        //En este caso no entro al if anterior
+        // Mueve el puntero necesario dependiendo si es mayor o menor
+        pointers[((valueDif - diferencia)/abs(valueDif - diferencia)) + 1 ]++; // se realiza un calculo qie hara que aumente el puntero de x posicion
+        //cout << "Resultado Calculo: " << ((valueDif - diferencia)/abs(valueDif - diferencia)) + 1 << endl;
+    }
+    return resul;
+}
 
 
 int main(){
@@ -261,10 +323,11 @@ int main(){
     int list3[6] = {1, 1, 1, 1, 1, 1};
     cout << "Prueba con {1, 1, 1, 1, 1, 1}, dia 3, mes 3 " << " Resultado: " << subarrayDivisionV1( list3, 6, 3, 3) <<endl;
     cout << "Prueba con {1, 1, 1, 1, 1, 1}, dia 2, mes 3 " << " Resultado: " << subarrayDivisionV1( list3, 6, 2, 3) <<endl;
-
-     int list4[1] = {4};
+    
+    int list4[1] = {4};
     cout << "Prueba con {4}, dia 4, mes 1 " << " Resultado: " << subarrayDivisionV1( list4, 1, 4, 1) <<endl;
-
+    cout << "Prueba con {1, 1, 1, 1, 1, 1}, dia 4, mes 3 " << " Resultado: " << subarrayDivisionV1( list3, 6, 4, 3) <<endl;
+    cout << "Prueba con {1, 1, 1, 1, 1, 1}, dia 4, mes 4 " << " Resultado: " << subarrayDivisionV1( list3, 6, 4, 4) <<endl;
      cout <<"\nPruebas de SubarrayDivision Version 2" << endl;
     //LISTA, SIZE, DIA, MES
     cout << "Prueba con {2, 2, 1, 3, 2}, dia 4, mes 2 " << " Resultado: " << subarrayDivisionV2( list, 5, 4, 2) <<endl;
@@ -273,15 +336,27 @@ int main(){
 
     cout << "Prueba con {1, 1, 1, 1, 1, 1}, dia 3, mes 3 " << " Resultado: " << subarrayDivisionV2( list3, 6, 3, 3) <<endl;
     cout << "Prueba con {1, 1, 1, 1, 1, 1}, dia 2, mes 3 " << " Resultado: " << subarrayDivisionV2( list3, 6, 2, 3) <<endl;
-
     cout << "Prueba con {4}, dia 4, mes 1 " << " Resultado: " << subarrayDivisionV2( list4, 1, 4, 1) <<endl;
-
+    cout << "Prueba con {1, 1, 1, 1, 1, 1}, dia 4, mes 3 " << " Resultado: " << subarrayDivisionV2( list3, 6, 4, 3) <<endl;
+    cout << "Prueba con {1, 1, 1, 1, 1, 1}, dia 4, mes 4 " << " Resultado: " << subarrayDivisionV2( list3, 6, 4, 4) <<endl;
 
     cout <<"\n Pruebas de The minion Game" << endl;
     cout << "\nPalabra: BANANA Resultado: " << minionGame( "BANANA") << endl;
     cout << "Palabra: HOLA Resultado: " << minionGame( "HOLA") << endl;
     cout << "Palabra: HOLAAA Resultado: " << minionGame( "HOLAAA") << endl;
     cout << "Palabra: FEBRERO Resultado: " << minionGame("FEBRERO") << endl;
+
+    //Cipher(2, 6, 1110001);
+    cout << "\n----------------Pruebas Cipher--------------" << endl;
+    cout<< "Prueba con K= 2, N = 6, MENSAJE=1110001, Resultado: " << cipher(2, 6, "1110001") << endl;
+    cout<< "Prueba con K= 2, N = 6, MENSAJE=1110100110, Resultado: " << cipher(4, 7, "1110100110") << endl;
+   // cout<< "Prueba con K= 2, N = 6, MENSAJE=1110001, Resultado: " << cipher(2, 6, "1110001") << endl;
+
+   cout << "\n--------------Pruebas Pairs--------------" << endl;
+   vector<int> p1 = {1,2,3,4};
+   cout <<"Array: {1,2,3,4}, k=1, Resultado: " << pairs(1, p1) << endl;
+   vector<int> p2 = {1,2,3,4};
+   cout << "Array: {1,2,3,4}, k=2, Resultado: " << pairs(2, p1) << endl;
 
     return 0;
 }
