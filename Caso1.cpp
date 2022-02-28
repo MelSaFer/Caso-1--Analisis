@@ -3,6 +3,8 @@ Instituto Tecnologico de Costa Rica, Analisis de Algoritmos
 CASO 1
 MELANY DAHIANA SALAS FERNANDEZ
 2021121147
+//Resositorio de github: https://github.com/MelSaFer/Caso-1--Analisis
+
 */
 
 #include <iostream>
@@ -32,9 +34,9 @@ vector<string> split(const string &);
 int compareTripletsV1( int lista1[3], int lista2[3]){
     
     int resul[2]= {0,0};
-    
+    //Ciclo 1, recorre cada lista de 3 enteros
     for(int i = 0; i < 3; i++){
-        
+        //Compara cada caso
         if (lista1[i] == lista2[i]){
             //cout<< "Punto para Ninguno"<< endl;
         } else if(lista1[i] < lista2[i]){ //Punto para Bob
@@ -49,18 +51,19 @@ int compareTripletsV1( int lista1[3], int lista2[3]){
     cout<< "Resultado Bob: " << resul[1] << endl;
     return 0;
 }
+
 //Version 2- Optimizada
 //Es mas eficiente por:
 //                     > No tiene ciclos, por lo que no hace que el sistema adelante trabajo y
-//                       tenga que deshacerlo porque sobrepasa pa condicion de parada
+//                       tenga que deshacerlo porque sobrepasa condicion de parada, 
+//                       ahorrando recursos como el tiempo de ejecucion.
 int* compareTripletsV2( int lista1[3], int lista2[3]){
     
     static int resul[2]= {0,0};
-    
+    //Evalua los casos y de una vez hace la suma, haciendo el algoritmo mas eficiente
     resul[0]= ((lista1[0] > lista2[0])? 1 : 0) + ((lista1[1] > lista2[1])? 1 : 0) + ((lista1[2] > lista2[2])? 1 : 0);
     resul[1]= ((lista1[0] < lista2[0])? 1 : 0) + ((lista1[1] < lista2[1])? 1 : 0) + ((lista1[2] < lista2[2])? 1 : 0);
     
-
     cout<< "Resultado Alice: " << resul[0] << endl;
     cout<< "Resultado Bob: " << resul[1] << endl;
     return resul;
@@ -72,7 +75,8 @@ int* compareTripletsV2( int lista1[3], int lista2[3]){
 //Salidas: La hora en formato de 24 horas
 //Resticciones: NA
 
-//Version 1.
+//Version 1- Esta version necesita hacer muchas comparaciones para evaluacion de casos generales y especiales
+//          gastando mas recursos.
 string timeConversionV1(string hora12){
     int hora = stoi(hora12.substr(0,2));
     if(hora12.substr(8,2) == "PM"){
@@ -87,8 +91,10 @@ string timeConversionV1(string hora12){
 }
 
 //Version 2
-//Utiliza solamente una sentencia if, en comparacion a la otra que usa 3
-
+//Es mas eficiente porque:
+//                      >Utiliza solamente una sentencia if, en comparacion a la otra que usa 3
+//                       comparaciones en la evaluacion de los casos, esto hace que el programa 
+//                       sea mas eficiente y utilice menos recursos.
 string timeConversionV2(string horaInicial){
     string horaFinal = horaInicial.substr(2, 6); //Corta desde el primer: hasta los segundos
     int hora = stoi(horaInicial.substr(0,2));
@@ -121,50 +127,33 @@ string timeConversionV2(string horaInicial){
 //          enteros obtener el dia de cumpleaños y la cantidad de elementos
 //          debe ser el mes.
 
-//Funcion para suma de arrays, se usa en la version menos eficiente
-int suma(int listaInt[], int size){
-    int resul = 0;
-    for(int i =0; i< size; i++){
-        resul+= listaInt[i];
-    }
-    return resul;
-}
-
 //Version 1.
-//Esta solucion es menos eficiente, pues usa 1 ciclo para recorrer la lista, un segundo ciclo para hacer combinaciones y un 
-//tercer ciclo para verificar la suma de los elementos del array
+//Esta solucion es menos eficiente, pues usa 1 ciclo para recorrer la lista y un segundo ciclo para hacer combinaciones
 int subarrayDivisionV1(int listaInt[], int size, int dia, int mes){
-    int comboCumple[mes];
-    int contElementos;
-    int contResul=0;
-    int control;
-
-    for(int i = 0; i < (size - (mes-1)); i++ ){
-        comboCumple[0]= listaInt[i];
-        control= i+1;
-        contElementos=1;
-        for(int i2 = 1; i2 <= mes; i2++){
-            comboCumple[i2]= listaInt[control];
-            if (contElementos==mes && suma(comboCumple, mes)== dia){
-                contResul++;  
-            } else if (contElementos==mes){
-                break;
-            }else {
-                contElementos++;
-            }
-        } 
+    int contResul=0;       //Contador para contar la cantidad de combinaciones
+    int acumSuma;
+    for(int i = 0; i < (size-(mes-1)); i++){
+        acumSuma=0;
+        for(int i2 = 0; i2 < mes; i2++){
+            acumSuma+= listaInt[i+i2];
+        }
+        if(acumSuma == dia){
+            contResul++;
+        }
     }
     return contResul;
 }
 
 
 //Version 2.
-//Es mas eficiente porque, a comparacion de la solucion anterior, solo usa un ciclo for, no 3.
+//Es mas eficiente por:
+//                      >A comparacion de la solucion anterior, solo usa un ciclo for, no 2, usando
+//                       mennos tiempo para resolucion del problema.
 int subarrayDivisionV2(int listaInt[], int size, int dia, int mes){
-    int inicial = 0;
-    int contResul = 0;
-    int suma = 0;
-    int control= 1;
+    int inicial = 0;    //
+    int contResul = 0;  //Contador para el resultado
+    int suma = 0;       //Variable que lleva la suma de los enteros
+    int control= 1;     //
     for (int i=0; i < size; i++){
         suma+=listaInt[i];
         if (control == mes && suma == dia){
@@ -185,11 +174,14 @@ int subarrayDivisionV2(int listaInt[], int size, int dia, int mes){
 //Salidas: El nombre del jugador ganador y el puntaje obtenido
 //Restricciones: NA
 
+//Esta funcion es eficiente por que en lugar de hacer multiples recorridos en la palabra evalua los posibles casos
+// a partir de la posicion actual, haciendo necesario solo un ciclo for.
 string minionGame( string palabra){
 
-    string resul;
+    string resul;    //Variable para formar el resultado final
+    //Variables para limites
     int lim = palabra.length(); int lim2 = lim;
-    int contC = 0 ; int contV = 0;
+    int contC = 0 ; int contV = 0;  //Contadores de vocales y consonantes
 
     for(int i = 0; i <= lim; i++){
         char letra = palabra[i]; //La letra de la palabra en la que estoy actualmente
@@ -216,9 +208,7 @@ string minionGame( string palabra){
 string cipher(int k, int n, string s) {
 //    /* n es la longitud del string resultado
     vector<char> result(n);
-
     result[0] = s[0]-48;
-
     // Calcular los elementos de 1 a k-1
     for (int i = 1; i < k; i++) {
         result[i] = s[i-1] ^ s[i];
@@ -240,15 +230,20 @@ string cipher(int k, int n, string s) {
     return final_result;
 }
 
+//Pairs___________________________________________________________________
+//Entradas: Un int que representa la direnecia e=que deben tener 2 numero y un array
+//Salidas: La cantidad de numeros con esta diferencia
+//Restricciones: NA
 int pairs(int diferencia, vector<int> arr){
-    int pointers[] = {1, 0, 0};     //Ayudan a ir avanzando en el array
+    sort(arr.begin(), arr.end());   //Ordenamiento del array
+    int pointers[] = {1, 0, 0};     //Ayudan a ir avanzando en el array e ir haciendo comparaciones
     int resul = 0;                  //contador con el resultado de numeros que tienen diferencia K
     int valueDif = 0;               //Diferencia entre 2 numeros
 
     //Ciclo while para hacer los recorridos
     while (pointers[0] < arr.size()) {
         //cout <<  "Pointer[0]:" << pointers[0] <<  " Pointer[1]:" << pointers[1] <<  " Pointer[2]:" << pointers[2]<< endl;
-        valueDif = abs(arr[pointers[0]] - arr[pointers[2]]); //resta entre numeros
+        valueDif = abs(arr[pointers[0]] - arr[pointers[2]]); //resta entre numeros(mayor - menor)
         //cout << "Pos1: " << arr[pointers[0]] << "| pos2 : "<<  arr[pointers[2]] << endl;
         if (valueDif == diferencia) {        //si la diferencia en de k
             resul++;                        //Se aumenta en contador
@@ -257,7 +252,7 @@ int pairs(int diferencia, vector<int> arr){
         }
         //En este caso no entro al if anterior
         // Mueve el puntero necesario dependiendo si es mayor o menor
-        pointers[((valueDif - diferencia)/abs(valueDif - diferencia)) + 1 ]++; // se realiza un calculo qie hara que aumente el puntero de x posicion
+        pointers[((valueDif - diferencia)/abs(valueDif - diferencia)) + 1 ]++; // se realiza un calculo que hara que aumente el puntero de x posicion
         //cout << "Resultado Calculo: " << ((valueDif - diferencia)/abs(valueDif - diferencia)) + 1 << endl;
     }
     return resul;
@@ -265,10 +260,18 @@ int pairs(int diferencia, vector<int> arr){
 
 
 int main(){
-    //Listas para probar ejercicio 1
+    //Listas para probar ejercicios
     int lista1[3]= {1,3,4};
     int lista2[3]= {2,3,7};
     int lista3[3]= {2,4,5};
+    int list[5] = {2, 2, 1, 3, 2};
+    int list2[5] = {1, 2, 1, 3, 2};
+    int list3[6] = {1, 1, 1, 1, 1, 1};
+    int list4[1] = {4};
+    vector<int> p2 = {1,2,3,4};
+    vector<int> p1 = {1,2,3,4};
+
+    cout<< "\n---------------Pruebas Ejercicio 1------------"<< endl;
 
     cout << "Prueba 1- Listas {1,3,4} y {1,3,4}" << endl;
     compareTripletsV1(lista1, lista1);
@@ -276,86 +279,79 @@ int main(){
     cout << "\nPrueba 2- Listas {1,3,4} y {2,3,7}" << endl;
     compareTripletsV1(lista1, lista2);
 
-     cout << "\nPrueba 3- Listas {2,4,5} y {2,3,7}" << endl;
-    compareTripletsV1(lista3, lista2);
+    //cout << "\nPrueba 3- Listas {2,4,5} y {2,3,7}" << endl;
+    //compareTripletsV1(lista3, lista2);
 
-    cout << "\n\nPrueba 1 V2- {1,3,4} y {1,3,4}" << endl;
+    cout << "\nPrueba 1 Version 2- {1,3,4} y {1,3,4}" << endl;
     compareTripletsV2(lista1, lista1);
 
-    cout << "\nPrueba 2 V2- Listas {1,3,4} y {2,3,7}" << endl;
+    cout << "\nPrueba 2 Version 2- Listas {1,3,4} y {2,3,7}" << endl;
     compareTripletsV2(lista1, lista2);
 
-     cout << "\nPrueba 3 V2- Listas {2,4,5} y {2,3,7}" << endl;
-    compareTripletsV2(lista3, lista2);
+    //cout << "\nPrueba 3 V2- Listas {2,4,5} y {2,3,7}" << endl;
+    //compareTripletsV2(lista3, lista2);
 
-    cout<< "\n\nPruebas Ejercicio 2"<< endl;
-    cout << "\nHORA EN FORMATO 12 HORAS: 02:00:22PM" << endl;
+    cout<< "\n\n-------------------Pruebas Ejercicio 2-------------------"<< endl;
+
+    cout << "HORA EN FORMATO 12 HORAS: 02:00:22PM" << endl;
     cout << "HORA EN FORMATO 24 HORAS: " << timeConversionV1("02:00:22PM")<<endl;
+
     cout << "\nHORA EN FORMATO 12 HORAS: 11:20:16AM" << endl;
     cout << "HORA EN FORMATO 24 HORAS: " << timeConversionV1("11:20:16AM")<<endl;
-    cout << "\nHORA EN FORMATO 12 HORAS: 09:42:09PM" << endl;
-    cout << "HORA EN FORMATO 24 HORAS: " << timeConversionV1("09:42:09PM")<<endl;
-    cout << "\nHORA EN FORMATO 12 HORAS: 12:27:53PM" << endl;
-    cout << "HORA EN FORMATO 24 HORAS: " << timeConversionV1("12:27:53PM")<<endl;
+    
+    //cout << "\nHORA EN FORMATO 12 HORAS: 09:42:09PM" << endl;
+    //cout << "HORA EN FORMATO 24 HORAS: " << timeConversionV1("09:42:09PM")<<endl;
+
+    //cout << "\nHORA EN FORMATO 12 HORAS: 12:27:53PM" << endl;
+    //cout << "HORA EN FORMATO 24 HORAS: " << timeConversionV1("12:27:53PM")<<endl;
 
 
-    cout<< "\n\nPruebas Ejercicio 2 v2"<< endl;
-    cout << "\nHORA EN FORMATO 12 HORAS: 02:00:22PM" << endl;
+    cout<< "\n\n--------------------Pruebas Ejercicio 2 version 2----------------------"<< endl;
+    cout << "HORA EN FORMATO 12 HORAS: 02:00:22PM" << endl;
     cout << "HORA EN FORMATO 24 HORAS: " << timeConversionV2("02:00:22PM")<<endl;
 
     cout << "\nHORA EN FORMATO 12 HORAS: 08:27:53PM" << endl;
     cout << "HORA EN FORMATO 24 HORAS: " << timeConversionV2("08:27:53PM")<<endl;
 
-    cout << "\nHORA EN FORMATO 12 HORAS: 12:27:53PM" << endl;
-    cout << "HORA EN FORMATO 24 HORAS: " << timeConversionV2("12:27:53PM")<<endl;
+    //cout << "\nHORA EN FORMATO 12 HORAS: 12:27:53PM" << endl;
+    //cout << "HORA EN FORMATO 24 HORAS: " << timeConversionV2("12:27:53PM")<<endl;
 
-    cout << "\nHORA EN FORMATO 12 HORAS: 12:27:53AM" << endl;
-    cout << "HORA EN FORMATO 24 HORAS: " << timeConversionV2("12:27:53AM")<<endl;
+    //cout << "\nHORA EN FORMATO 12 HORAS: 12:27:53AM" << endl;
+    //cout << "HORA EN FORMATO 24 HORAS: " << timeConversionV2("12:27:53AM")<<endl;
 
-    cout <<"\nPruebas de SubarrayDivision Version 1" << endl;
-    //LISTA, SIZE, DIA, MES
-    int list[5] = {2, 2, 1, 3, 2};
+    cout <<"\n\n---------------Pruebas de SubarrayDivision Version 1------------------" << endl;
+    
     cout << "Prueba con {2, 2, 1, 3, 2}, dia 4, mes 2 " << " Resultado: " << subarrayDivisionV1( list, 5, 4, 2) <<endl;
-
-    int list2[5] = {1, 2, 1, 3, 2};
+    
     cout << "Prueba con {1, 2, 1, 3, 2}, dia 3, mes 2 " << " Resultado: " << subarrayDivisionV1( list2, 5, 3, 2) <<endl;
 
-    int list3[6] = {1, 1, 1, 1, 1, 1};
     cout << "Prueba con {1, 1, 1, 1, 1, 1}, dia 3, mes 3 " << " Resultado: " << subarrayDivisionV1( list3, 6, 3, 3) <<endl;
-    cout << "Prueba con {1, 1, 1, 1, 1, 1}, dia 2, mes 3 " << " Resultado: " << subarrayDivisionV1( list3, 6, 2, 3) <<endl;
     
-    int list4[1] = {4};
     cout << "Prueba con {4}, dia 4, mes 1 " << " Resultado: " << subarrayDivisionV1( list4, 1, 4, 1) <<endl;
-    cout << "Prueba con {1, 1, 1, 1, 1, 1}, dia 4, mes 3 " << " Resultado: " << subarrayDivisionV1( list3, 6, 4, 3) <<endl;
-    cout << "Prueba con {1, 1, 1, 1, 1, 1}, dia 4, mes 4 " << " Resultado: " << subarrayDivisionV1( list3, 6, 4, 4) <<endl;
-     cout <<"\nPruebas de SubarrayDivision Version 2" << endl;
-    //LISTA, SIZE, DIA, MES
+ 
+    cout <<"\n\n----------------Pruebas de SubarrayDivision Version 2------------------" << endl;
     cout << "Prueba con {2, 2, 1, 3, 2}, dia 4, mes 2 " << " Resultado: " << subarrayDivisionV2( list, 5, 4, 2) <<endl;
 
     cout << "Prueba con {1, 2, 1, 3, 2}, dia 3, mes 2 " << " Resultado: " << subarrayDivisionV2( list2, 5, 3, 2) <<endl;
 
-    cout << "Prueba con {1, 1, 1, 1, 1, 1}, dia 3, mes 3 " << " Resultado: " << subarrayDivisionV2( list3, 6, 3, 3) <<endl;
-    cout << "Prueba con {1, 1, 1, 1, 1, 1}, dia 2, mes 3 " << " Resultado: " << subarrayDivisionV2( list3, 6, 2, 3) <<endl;
-    cout << "Prueba con {4}, dia 4, mes 1 " << " Resultado: " << subarrayDivisionV2( list4, 1, 4, 1) <<endl;
-    cout << "Prueba con {1, 1, 1, 1, 1, 1}, dia 4, mes 3 " << " Resultado: " << subarrayDivisionV2( list3, 6, 4, 3) <<endl;
-    cout << "Prueba con {1, 1, 1, 1, 1, 1}, dia 4, mes 4 " << " Resultado: " << subarrayDivisionV2( list3, 6, 4, 4) <<endl;
+    //cout << "Prueba con {1, 1, 1, 1, 1, 1}, dia 3, mes 3 " << " Resultado: " << subarrayDivisionV2( list3, 6, 3, 3) <<endl;
+        
+    //cout << "Prueba con {4}, dia 4, mes 1 " << " Resultado: " << subarrayDivisionV2( list4, 1, 4, 1) <<endl;
+    
 
-    cout <<"\n Pruebas de The minion Game" << endl;
-    cout << "\nPalabra: BANANA Resultado: " << minionGame( "BANANA") << endl;
-    cout << "Palabra: HOLA Resultado: " << minionGame( "HOLA") << endl;
-    cout << "Palabra: HOLAAA Resultado: " << minionGame( "HOLAAA") << endl;
+    cout <<"\n\n ------------------Pruebas de The minion Game--------------------" << endl;
+    cout << "Palabra: BANANA Resultado: " << minionGame( "BANANA") << endl;
     cout << "Palabra: FEBRERO Resultado: " << minionGame("FEBRERO") << endl;
-
-    //Cipher(2, 6, 1110001);
-    cout << "\n----------------Pruebas Cipher--------------" << endl;
+    //cout << "Palabra: HOLA Resultado: " << minionGame( "HOLA") << endl;
+    
+    
+    cout << "\n\n----------------------Pruebas Cipher------------------------" << endl;
     cout<< "Prueba con K= 2, N = 6, MENSAJE=1110001, Resultado: " << cipher(2, 6, "1110001") << endl;
     cout<< "Prueba con K= 2, N = 6, MENSAJE=1110100110, Resultado: " << cipher(4, 7, "1110100110") << endl;
    // cout<< "Prueba con K= 2, N = 6, MENSAJE=1110001, Resultado: " << cipher(2, 6, "1110001") << endl;
 
-   cout << "\n--------------Pruebas Pairs--------------" << endl;
-   vector<int> p1 = {1,2,3,4};
+   cout << "\n------------------------Pruebas Pairs------------------------" << endl;
    cout <<"Array: {1,2,3,4}, k=1, Resultado: " << pairs(1, p1) << endl;
-   vector<int> p2 = {1,2,3,4};
    cout << "Array: {1,2,3,4}, k=2, Resultado: " << pairs(2, p1) << endl;
 
     return 0;
