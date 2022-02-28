@@ -2,7 +2,8 @@
 Caso 1- Curso análisis de algoritmos
 
 Cosas importantes:
-                Libreria #include <bits/stdc++.h> tira error pero sin ella el ejercicio 5 no ejecuta, a pesar de que sale error el programa ejecuta con normalidad.
+                >Libreria #include <bits/stdc++.h> tira error pero sin ella el ejercicio 5 no ejecuta, a pesar de que sale error el programa ejecuta con normalidad.
+                >En el main hay 2 pruebas por ejercicio, pero comentadas hay mas pruebas en caso de que sean necesarias
 
 >>>>>Evidencia de prueba de ejecucion:
 ---------------Pruebas Ejercicio 1------------
